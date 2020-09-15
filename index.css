@@ -1,0 +1,22 @@
+h1 {
+	text-align: center;
+	color: darkgreen;
+}
+
+button {
+	color: darkgreen;
+	background-color: navy;
+	border-color: navy;
+	width: 150px;
+	height: 30px;
+	border-radius: 5px;
+	font-weight: bolder;
+}
+
+body {
+	background-color: black;
+}
+
+p {
+	color: darkgreen;
+}

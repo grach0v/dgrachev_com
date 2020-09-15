@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython.js" integrity="sha256-rA89wPrTJJQFWJaZveKW8jpdmC3t5F9rRkPyBjz8G04=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.8.8/brython_stdlib.js" integrity="sha256-Gnrw9tIjrsXcZSCh/wos5Jrpn0bNVNFJuNJI9d71TDs=" crossorigin="anonymous"></script>
+
+    <link href='../index.css' rel='stylesheet'>
+
+    <title>Test</title>
+</head>
+<body onload="brython()">
+    <h1>Random layout</h1>
+
+    <p id="Text to copy">{text}</p>
+    <p id="output">Copy the text</p>
+    <p id="time"></p>
+
+    <input type="text" id="text" placeholder="Enter something">
+
+    <!-- Text bind -->
+    <script type="text/python" id="script1">
+        from browser import document
+        from random import shuffle 
+        from browser.template import Template
+        from time import time
+
+        text_to_copy = 'The quick brown fox jumps over the lazy dog'
+        Template (document ['Text to copy']).render (text=text_to_copy)
+
+        qwerty = list('qwertyuiopasdfghjklzxcvbnm')
+        permutation = qwerty.copy()
+        shuffle (permutation)
+        dictionary = {q:p for q,p in zip(qwerty, permutation)}
+        end_game = False
+
+        time_start = time()
+
+
+        def translate (text):
+            global dictionary
+            global qwerty 
+
+            def translate_letter (letter):
+                if letter.lower() in qwerty:
+                    if letter.isupper ():
+                        return dictionary [letter.lower()].upper()
+                    else:
+                        return dictionary [letter]
+                else:
+                    return letter
+
+            translation = [translate_letter (letter) for letter in text]
+            return ''.join(translation)
+
+        def show_text(e):
+            global end_game
+
+            if not end_game:
+                input_text = e.target.value
+                translation = translate (input_text)
+
+                color = 'red'
+                if text_to_copy [: len(translation)] == translation:
+                    color = 'green'
+
+                document ['output'].style.color = color
+                document ['output'].textContent = translation
+
+                if text_to_copy == translation:
+                    document ['time'].textContent = 'your time is {0} seconds'.format (int(time() - time_start))
+                    end_game = True
+
+        document['text'].bind('input', show_text)
+
+
+    </script>
+
+</body>
+</html>
